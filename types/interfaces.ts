@@ -1,9 +1,19 @@
 
-// Interface example
-export interface customerData {
+// Exported Interface example (you need to import it in the file you want to use it)
+export interface Customer {
     id: string;
     name: string;
     email: string;
-    service_type: string;
-    tax_profile_id: string;
 }
+
+// Global interface example
+declare global {
+    
+    interface Post {
+      id: string;
+      title: string;
+      body: string;
+    }
+
+}
+  
