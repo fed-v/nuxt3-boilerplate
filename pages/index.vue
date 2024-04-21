@@ -7,7 +7,8 @@
     <main class="content">
         <div class="welcome-container">
             <h1>{{ $t('welcome') }}</h1>
-            <button @click="callToast">Show Success Toast</button>
+            <p>{{ $t('description') }}</p>
+            <button @click="callToast">{{ $t('homeButton') }}</button>
         </div>
     </main>
 
@@ -24,9 +25,12 @@
 
     const year = new Date().getFullYear();
 
+    // Grab the translated values t
+	const { t } = useI18n();
+    
     function callToast(): void {
       
-        useToast().success("This is a success toast message", {
+        useToast().success( t('successToastMessage'), {
             position: POSITION.TOP_CENTER,
             hideProgressBar: true,
             closeButton: false,
@@ -47,12 +51,20 @@
 
     .welcome-container {
         margin: 125px auto;
-        width: 300px;
+        width: 450px;
         background: var(--color-primary-2);
         border-radius: 0.25rem;
         text-align: center;
         padding: 1.5rem;
         border: 1px solid var(--color-primary-3);
+    }
+
+    .welcome-container h1 {
+        color: var(--color-primary-4);
+    }
+
+    .welcome-container p {
+        margin-bottom: 1.5rem;
     }
 
     footer {

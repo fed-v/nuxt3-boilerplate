@@ -1,3 +1,6 @@
 {
-    "welcome": "Bienvenue"
+    "welcome": "Bienvenue",
+    "description": "à mon modèle de départ Nuxt 3 avec de nombreuses fonctionnalités utiles.",
+    "homeButton": "Afficher le message de succès",
+    "successToastMessage": "Ceci est un message de notification de succès"
 }
