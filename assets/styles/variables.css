@@ -1,0 +1,26 @@
+:root {
+
+    /* COLORS */
+    --color-white: #ffffff;
+
+    /* PRIMARY */
+    --color-primary-1: #020420;
+    --color-primary-2: #0f172a;
+    --color-primary-3: #1e293b;
+    --color-primary-4: #00dc80;
+    --color-primary-5: #00c16a;
+    --color-primary-6: #94a3b8;
+
+   
+    /* ELEVATIONS */
+    --elevation-1: 0px 1px 2px 0px rgba(0, 0, 0, 0.12),
+      0px 1px 6px 0px rgba(0, 0, 0, 0.1), 0px 4px 12px 0px rgba(0, 0, 0, 0.05);
+
+    --elevation-2: 0px 2px 4px 0px rgba(0, 0, 0, 0.12),
+      0px 3px 12px 0px rgba(0, 0, 0, 0.1), 0px 10px 24px 0px rgba(0, 0, 0, 0.05);
+
+    --elevation-3: 0px 10px 14px -4px rgba(0, 0, 0, 0.12),
+      0px 16px 40px 0px rgba(0, 0, 0, 0.08),
+      0px 18px 56px 20px rgba(0, 0, 0, 0.05);
+
+}

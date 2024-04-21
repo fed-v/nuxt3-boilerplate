@@ -23,4 +23,14 @@
 
 <style scoped>
 
+    select {
+        padding: 0.2rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 0.25rem;
+        background-color: var(--color-primary-3);
+        color: var(--color-primary-4);
+        border: 1px solid var(--color-primary-4);
+    }
+
 </style>

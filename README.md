@@ -1,6 +1,7 @@
 # Nuxt 3 Boilerplate
 
 A Nuxt 3 starter boilerplate with a lot of useful features.
+
 Features include:
 
 * Project structure following best practices
