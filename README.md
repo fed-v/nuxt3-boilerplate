@@ -12,6 +12,7 @@ Features include:
 * Middleware template
 * Custom error page
 * Unit testing using Vitest
+* Sample server route ready for backend API calls
 
 ## Setup
 

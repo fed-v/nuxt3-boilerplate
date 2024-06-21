@@ -5,11 +5,16 @@
     </header>
 
     <main class="content">
+
         <div class="welcome-container">
             <h1>{{ $t('welcome') }}</h1>
             <p>{{ $t('description') }}</p>
             <button @click="callToast">{{ $t('homeButton') }}</button>
+
+            <p class="server-message">{{ message }}</p>
+
         </div>
+
     </main>
 
     <footer>
@@ -25,6 +30,9 @@
 
     const year = new Date().getFullYear();
 
+    // Define a ref to store the fetched data
+    const message = ref('');
+
     // Grab the translated values t
 	const { t } = useI18n();
     
@@ -38,6 +46,19 @@
         });
 
     }
+
+    // Fetch data from the server when the component is mounted
+    onMounted(async () => {
+
+        try {
+            const response = await fetch('/api/hello');
+            const data = await response.json();
+            message.value = data.message;
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+        }
+
+    });
 
 </script>
 
@@ -74,6 +95,12 @@
         position: absolute;
         width: 100%;
         color: var(--color-primary-6);
+    }
+
+    .server-message {
+        font-size: 0.9rem;
+        color: var(--color-primary-5);
+        margin-top: 20px;
     }
 
 </style>
