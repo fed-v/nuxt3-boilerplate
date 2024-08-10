@@ -92,22 +92,10 @@ Check out the [Nuxt 3 deployment documentation](https://nuxt.com/docs/getting-st
 Create and start the development container:
 
   ```bash
-  make dev-up
-  ```
-
-If you cannot or do not want to install make, you can directly run the Docker Compose commands that the Makefile is trying to execute:
-
-  ```bash
   docker compose up --build -d
   ```
   
 Stop and remove the development container:
-
-  ```bash
-  make dev-down
-  ```
-
-or alternatively:
 
   ```bash
   docker compose down
@@ -116,21 +104,10 @@ or alternatively:
 Create and start the production container:
 
   ```bash
-  make prod-up
-  ```
-or alternatively:
-
-  ```bash
   docker compose -f compose.production.yaml up --build -d
   ```
 
 Stop and remove the production container:
-
-  ```bash
-  make prod-down
-  ```
-
-or alternatively:
 
   ```bash
   docker compose -f compose.production.yaml down
