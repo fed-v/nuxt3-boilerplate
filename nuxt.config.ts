@@ -1,6 +1,5 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-
   devtools: { 
     enabled: true 
   },
@@ -10,13 +9,11 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n"
   ],
 
-
   imports: {
     // Auto-import pinia stores defined in `~/stores`
     dirs: ['stores']
   },
-  
-  
+
   pinia: {
     autoImports: [
       'defineStore',
@@ -46,14 +43,11 @@ export default defineNuxtConfig({
     defaultLocale: "en-US",
   },
 
-
-
   css: [
     '@/assets/styles/reset.css',
     '@/assets/styles/variables.css',
     '@/assets/styles/global.css'
   ],
-
 
   app: {
 
@@ -86,7 +80,6 @@ export default defineNuxtConfig({
     }
   },
 
-
   // Any configuration settings that only run in Dev mode go here:
   $development: {
     app: {
@@ -95,7 +88,6 @@ export default defineNuxtConfig({
         }
     }
   },
-
 
   // Any configuration settings that only run in Production go here:
   $production: {
@@ -106,7 +98,6 @@ export default defineNuxtConfig({
       }
   },
 
-
   // Any configuration settings that only run when testing go here:
   $test: {
       app: {
@@ -115,7 +106,6 @@ export default defineNuxtConfig({
           }
       }
   },
-
 
   // Runtime variables
   runtimeConfig : {
@@ -131,5 +121,5 @@ export default defineNuxtConfig({
     
   },
 
-
+  compatibilityDate: '2024-08-28',
 })
