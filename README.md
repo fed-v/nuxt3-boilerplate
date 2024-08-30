@@ -242,3 +242,22 @@ with the following contents:
     }
     ```
     This will run Prettier and ESLint before before each commit. 
+
+    If you want to run Vitest after each commit as well, add the test command in Husky's pre-commit hook:
+
+    ```txt
+    #!/usr/bin/env sh
+    . "$(dirname -- "$0")/_/husky.sh"
+
+    npx lint-staged
+
+    npm test
+    ```
+
+    Make sure you've added the '--run' flag to your Vitest command in the package.json to make the test stop after running. Otherwise, they will prevent you from completing the commit:
+
+    ```txt
+    "scripts": { 
+       "test": "vitest run" 
+    }
+    ```
