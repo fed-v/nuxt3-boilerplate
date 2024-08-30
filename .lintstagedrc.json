@@ -1,3 +1,4 @@
 {
-    "*.{js,vue,ts,less,css}": ["prettier --write", "eslint"]
+    "*.{js,vue,ts,less,css}": ["prettier --write", "eslint"],
+    "*.{js,vue,ts}": "npm run test"
 }

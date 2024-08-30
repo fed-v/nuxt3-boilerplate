@@ -4,7 +4,6 @@ A Nuxt 3 starter boilerplate with a lot of useful features.
 
 Features include:
 
-* Project structure following best practices
 * Pinia state management and store template
 * Simple toast notification composable using vue-toastification module
 * Internationalization using Nuxt i18n module
@@ -14,6 +13,9 @@ Features include:
 * Unit testing using Vitest
 * Sample server route ready for backend API calls
 * Dockerfile to efficiently build the application in both development and production environments while keeping the final production image as lean as possible.
+* Husky for running linters and formatters on pre-commit
+* ESLint to catch bugs early in the development process
+* Prettier for enforcing consistent code formatting
 
 ## Setup
 
@@ -207,3 +209,36 @@ Check out the [Pinia documentation](https://pinia.vuejs.org/introduction.html) f
     })
     ```
 Check out the [Vitest documentation](https://vitest.dev/guide/) for more information.
+
+## Husky & Lint-staged
+
+1. Install Husky
+
+    ```bash
+    npx husky-init && npm install
+    ```
+
+2. Install Lint-staged
+
+    ```bash
+    npm install --save-dev lint-staged
+    ```
+
+3. Inside `.husky/pre-commit` replace `npm test` with `npx lint-staged`.
+
+    ```txt
+    #!/usr/bin/env sh
+    . "$(dirname -- "$0")/_/husky.sh"
+
+    npx lint-staged
+    ```
+
+4. In the root directory of your project, create the file `.lintstagedrc.json`
+with the following contents:
+
+    ```json
+    {
+      "*.{js,vue,ts,less,css}": ["prettier --write", "eslint"]
+    }
+    ```
+    This will run Prettier and ESLint before before each commit. 
