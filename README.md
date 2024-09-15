@@ -210,6 +210,52 @@ Check out the [Pinia documentation](https://pinia.vuejs.org/introduction.html) f
     ```
 Check out the [Vitest documentation](https://vitest.dev/guide/) for more information.
 
+## Nuxt Eslint Module
+
+1. Install the module:
+  
+    ```txt
+    npx nuxi module add eslint
+    ```
+
+2. If you have a previous .eslintrc file, delete it.
+
+3. Running your app will automatically generate an eslint.config.mjs.
+
+4. If you are using TypeScript, you need to install the typescript in your project:
+
+    ```txt
+    npm install typescript --save-dev
+    ```
+More info: https://eslint.nuxt.com/packages/module
+
+## Setting up Prettier
+
+1. Install Prettier and it's vue plugin:
+
+    ```txt
+    npm install prettier --save-dev
+    npm install prettier-plugin-vue --save-dev
+    ```
+2. When using prettier with eslint, make sure to install the eslint config prettier to disable eslint formatting so that it doesn’t conflict with prettier:
+
+    ```txt
+    npm install eslint-config-prettier –save-dev
+    ```
+3. Create a .prettierrc configuration file in your root directory with configuration rules:
+
+   ```txt
+    {
+      "vueIndentScriptAndStyle": true,
+      "tabWidth": 2,
+      "useTabs": false,
+      "semi": true,
+      "singleQuote": true
+    }
+    ```
+
+4. Add a .prettierignore file to ignore files or directories like for example your node_modules from being formatted by prettier.
+
 ## Husky & Lint-staged
 
 1. Install Husky
@@ -261,3 +307,4 @@ with the following contents:
        "test": "vitest run" 
     }
     ```
+
