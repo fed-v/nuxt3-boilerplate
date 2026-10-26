@@ -1,8 +1,14 @@
 name: test-build
 
-# Runs on every push to any branch. The manual button runs it without a push.
+# Runs on a push to any branch, unless only docs or local tooling changed
+# (Markdown files, editor and Husky settings). The manual button runs it
+# without a push.
 on:
   push:
+    paths-ignore:
+      - '**.md'
+      - '.vscode/**'
+      - '.husky/**'
   workflow_dispatch:
 
 # The built-in GITHUB_TOKEN is read-only. A job that needs more must ask for it.
