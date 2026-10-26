@@ -1,13 +1,12 @@
 name: test-build
 
 # Runs on a push to any branch, unless only docs or local tooling changed
-# (Markdown files, editor and Husky settings). The manual button runs it
+# (Markdown files and Husky settings). The manual button runs it
 # without a push.
 on:
   push:
     paths-ignore:
       - '**.md'
-      - '.vscode/**'
       - '.husky/**'
   workflow_dispatch:
 
