@@ -16,6 +16,7 @@ Features include:
 * Husky for running linters and formatters on pre-commit
 * ESLint to catch bugs early in the development process
 * Prettier for enforcing consistent code formatting
+* GitHub Actions CI/CD that runs the Vitest tests on every push and publishes the Docker image to GitHub Container Registry from the default branch
 
 ## Setup
 
@@ -185,7 +186,7 @@ Check out the [Pinia documentation](https://pinia.vuejs.org/introduction.html) f
     ```json
     {
       "scripts": {
-        "test": "vitest"
+        "test": "vitest run"
       }
     }
     ```
@@ -194,12 +195,12 @@ Check out the [Pinia documentation](https://pinia.vuejs.org/introduction.html) f
 
 
     ```typescript
-    // tests/components/HelloWorld.vue
+    // tests/components/HelloWorld.spec.ts
 
     import { describe, it, expect } from 'vitest'
     import { mount } from '@vue/test-utils'
 
-    import HelloWorld from '../../src/components/HelloWorld.vue';
+    import HelloWorld from '../../components/HelloWorld.vue';
 
     describe('HelloWorld', () => {
       it('renders correctly', () => {
