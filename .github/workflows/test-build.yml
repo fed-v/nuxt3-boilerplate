@@ -1,0 +1,88 @@
+name: test-build
+
+# Runs on every push to any branch. The manual button runs it without a push.
+on:
+  push:
+  workflow_dispatch:
+
+# The built-in GITHUB_TOKEN is read-only. A job that needs more must ask for it.
+permissions:
+  contents: read
+
+# One run at a time per workflow and branch. On feature branches, pushing again
+# cancels the older run (saves minutes, avoids stale results). On the default
+# branch a run in progress is never cancelled, so each merge keeps its own result.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref_name != github.event.repository.default_branch }}
+
+jobs:
+  test:
+    runs-on: ubuntu-latest # A fresh, empty VM for every run.
+    timeout-minutes: 10 # Kill runaway jobs instead of burning free minutes.
+
+    steps:
+      # The VM starts empty. This downloads your repo onto it.
+      - uses: actions/checkout@v7
+
+      # Node 22 is a current LTS line. Keep it in step with the Dockerfile.
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      # Installs exactly what package-lock.json says.
+      - run: npm ci
+
+      # The `test` script is already `vitest run` (run once and exit).
+      - run: npm test
+
+  # Builds the production Docker image and publishes it to GitHub Container
+  # Registry (ghcr.io). Nothing runs anywhere: another system would pull it.
+  publish:
+    # Wait for `test`; skipped entirely if `test` fails.
+    needs: test
+    # Only publish from the default branch (master in this repo). Without this,
+    # every branch push would publish.
+    if: github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    # Job-level permissions REPLACE the workflow-level ones, so contents: read
+    # is restated. `packages: write` lets the token push to ghcr.io.
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      # Each job gets its own fresh VM, so it must check out the code again.
+      - uses: actions/checkout@v7
+
+      # Logs in to ghcr.io with the run's own short-lived token.
+      # No personal access token and no stored secret needed.
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # Works out the image tags and labels from the commit. The image name is
+      # ghcr.io/<owner>/<repo>, and the tags are <branch>-a1b2c3d and latest,
+      # for example ghcr.io/<owner>/<repo>:master-a1b2c3d. It also adds the
+      # label that links the package back to this repository.
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=sha,prefix={{branch}}-
+            type=raw,value=latest
+
+      # Builds the `production` stage of the Dockerfile and pushes it.
+      # `.` is the build context: the repo root that was just checked out.
+      - uses: docker/build-push-action@v7
+        with:
+          context: .
+          target: production
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}

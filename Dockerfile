@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG NODE_VERSION=20.11.0
+ARG NODE_VERSION=22.22.2
 
 ################################################################################
 # Set the base image
@@ -12,18 +12,18 @@ WORKDIR /usr/src/app
 
 ################################################################################
 # Create a stage for installing dependecies
-FROM base as dependencies
+FROM base AS dependencies
 
 # Copy the package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
 
 ################################################################################
 # Create a stage for running the application in development mode
-FROM dependencies as development
+FROM dependencies AS development
 
 # Copy the source code
 COPY . .
@@ -37,7 +37,7 @@ CMD [ "npm", "run", "dev" ]
 
 ################################################################################
 # Create a stage for building the application
-FROM dependencies as build
+FROM dependencies AS build
 
 # Copy the source code
 COPY . .
