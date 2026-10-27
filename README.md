@@ -17,6 +17,7 @@ Features include:
 * ESLint to catch bugs early in the development process
 * Prettier for enforcing consistent code formatting
 * GitHub Actions CI/CD that runs the Vitest tests on every push and publishes the Docker image to GitHub Container Registry from the default branch
+* Lighthouse CI that audits the production build on every push and fails the check if the accessibility score drops below 0.9 (performance is reported as a warning only)
 
 ## Setup
 
