@@ -2,5 +2,6 @@
     "welcome": "Welcome",
     "description": "to my Nuxt 3 starter boilerplate with a lot of useful features.",
     "homeButton": "Show Success Toast",
-    "successToastMessage": "This is a success toast message"
+    "successToastMessage": "This is a success toast message",
+    "language": "Language"
 }
