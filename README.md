@@ -18,6 +18,8 @@ Features include:
 * Prettier for enforcing consistent code formatting
 * GitHub Actions CI/CD that runs the Vitest tests on every push and publishes the Docker image to GitHub Container Registry from the default branch
 * Lighthouse CI that audits the production build on every push and fails the check if the accessibility score drops below 0.9 (performance is reported as a warning only)
+* Conventional Commits enforced by Commitlint through a Husky `commit-msg` hook, with Commitizen (`npm run commit`) for guided commit messages
+* Automatic `CHANGELOG.md` generation from the commit history using conventional-changelog, tied to `npm version` for releases
 
 ## Setup
 
@@ -310,3 +312,128 @@ with the following contents:
     }
     ```
 
+### Conventional Commits, Commitlint & Changelog
+
+Enforce a consistent commit message format with Commitlint, write messages through a guided prompt with Commitizen, and generate a `CHANGELOG.md` from your commit history.
+
+Messages follow the [Conventional Commits](https://www.conventionalcommits.org) format:
+
+```txt
+<type>(<optional scope>): <description>
+```
+
+Allowed types: `feat`, `fix`, `docs`, `style`, `refactor`, `perf`, `test`, `build`, `ci`, `chore` and `revert`. For example: `fix(auth): handle expired refresh tokens`.
+
+1. Install Commitlint and the conventional ruleset:
+
+    ```bash
+    npm install -D @commitlint/cli @commitlint/config-conventional
+    ```
+
+2. In the root directory of your project, create the file `commitlint.config.js`:
+
+    ```javascript
+    // commitlint.config.js
+
+    export default {
+      extends: ['@commitlint/config-conventional']
+    }
+    ```
+
+    The project uses ES modules (`"type": "module"` in `package.json`), hence `export default`. In a CommonJS project use `module.exports = { ... }` instead.
+
+3. Add a Husky `commit-msg` hook that runs Commitlint on every commit message:
+
+    ```bash
+    npx husky add .husky/commit-msg "npx --no -- commitlint --edit $1"
+    ```
+
+    The generated `.husky/commit-msg` file should look like this:
+
+    ```txt
+    #!/usr/bin/env sh
+    . "$(dirname -- "$0")/_/husky.sh"
+
+    npx --no -- commitlint --edit $1
+    ```
+
+4. Test it. The first commit should be rejected and the second one accepted:
+
+    ```bash
+    git commit --allow-empty -m "wip"
+    git commit --allow-empty -m "chore: test commitlint hook"
+    ```
+
+    Undo the test commit with `git reset --soft HEAD~1`.
+
+    The hook runs on every `git commit`, including `git commit -m`. To skip all Husky hooks on purpose (both `pre-commit` and `commit-msg`), use `git commit --no-verify`.
+
+5. Install Commitizen to build valid messages through an interactive prompt:
+
+    ```bash
+    npm install -D commitizen cz-conventional-changelog
+    ```
+
+    Add the following to your `package.json`:
+
+    ```json
+    {
+      "scripts": {
+        "commit": "cz"
+      },
+      "config": {
+        "commitizen": {
+          "path": "cz-conventional-changelog"
+        }
+      }
+    }
+    ```
+
+    Stage your changes and commit with the prompt instead of `git commit`:
+
+    ```bash
+    git add .
+    npm run commit
+    ```
+
+    The prompt asks for the type, an optional scope, a short description, an optional longer description, breaking changes and linked issues. Press Enter to skip the optional questions. For the breaking changes question, leave it empty unless there really is a breaking change. Any text typed there (even "no") is recorded as a `BREAKING CHANGE` and ends up in the changelog.
+
+6. Install the changelog generator:
+
+    ```bash
+    npm install -D conventional-changelog-cli conventional-changelog-conventionalcommits@^8
+    ```
+
+    The preset is pinned to version 8 on purpose. Commitlint pulls in a newer preset that requires a newer changelog writer than the one `conventional-changelog-cli` uses, which fails with `Missing helper: "conventional-changelog-conventionalcommits requires conventional-changelog-writer@9 or newer"`. Remove the pin once the CLI supports the newer writer.
+
+    Add these scripts to your `package.json`:
+
+    ```json
+    {
+      "scripts": {
+        "changelog": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s",
+        "changelog:all": "conventional-changelog -p conventionalcommits -i CHANGELOG.md -s -r 0",
+        "version": "npm run changelog && git add CHANGELOG.md"
+      }
+    }
+    ```
+
+    * `npm run changelog:all` rebuilds the whole `CHANGELOG.md` from the full git history. Run it once to bootstrap the file, as it overwrites the existing content.
+    * `npm run changelog` adds only the commits made since the last git tag.
+    * The `version` script is run automatically by `npm version` (see below).
+
+    Only `feat`, `fix`, `perf` and `revert` commits (plus breaking changes) appear in the changelog by default. Types like `docs` and `chore` are hidden.
+
+7. Cut a release. Make sure `package.json` has a `"version"` field (for example `"version": "0.1.0"`) and the working tree is clean, then run:
+
+    ```bash
+    npm version <major|minor|patch> -m "chore(release): %s"
+    ```
+
+    This bumps the version in `package.json`, regenerates the changelog, creates the release commit and tags it (for example `v1.0.0`). The `-m` flag is required, otherwise the default commit message (just the version number) is rejected by Commitlint. Push the commit and the tag together:
+
+    ```bash
+    git push --follow-tags
+    ```
+
+    Pick the bump from the commits since the last release: only `fix` commits mean `patch`, any `feat` means `minor`, and any breaking change (`feat!:` or a `BREAKING CHANGE:` footer) means `major`.
