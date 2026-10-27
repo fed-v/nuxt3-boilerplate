@@ -41,6 +41,40 @@ jobs:
       # The `test` script is already `vitest run` (run once and exit).
       - run: npm test
 
+  # Audits the built app with Lighthouse (accessibility and performance).
+  # Warn-only for now: results are logged and saved but never fail the run.
+  # Thresholds live in lighthouserc.json. As the app grows, raise them and
+  # switch a category from "warn" to "error" to make it a gate.
+  lighthouse:
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 22
+
+      - run: npm ci
+
+      # Lighthouse audits the production build, not the dev server.
+      - run: npm run build
+
+      # Starts the built server, audits it three times, and checks the median
+      # score against lighthouserc.json. The version is pinned so results do
+      # not shift under you.
+      - run: npx --yes @lhci/cli@0.15.1 autorun
+
+      # Keeps the HTML and JSON reports on the run page, even if a step failed.
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: lighthouse-report
+          path: .lighthouseci
+          if-no-files-found: ignore
+
   # Builds the production Docker image and publishes it to GitHub Container
   # Registry (ghcr.io). Nothing runs anywhere: another system would pull it.
   publish:
